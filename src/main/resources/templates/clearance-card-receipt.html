@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Clearance Card — Receipt</title>
+    <style>
+        /* ── Receipt paper geometry ───────────────────────────────────────── */
+        @page {
+            size: 58mm auto;   /* width fixed; height grows with content */
+            margin: 2mm 3mm;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff; padding: 0; margin: 0; }
+            .receipt { box-shadow: none; border: none; padding: 0; width: 100%; }
+        }
+        /* ── Screen preview ───────────────────────────────────────────────── */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 8pt;
+            color: #000;
+            background: #999;
+            margin: 0;
+            padding: 16px 0;
+        }
+        .no-print {
+            display: block;
+            margin: 0 auto 10px;
+            padding: 7px 22px;
+            font-family: system-ui, sans-serif;
+            font-size: 11pt;
+            cursor: pointer;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #fff;
+            width: 52mm;
+        }
+        .no-print:hover { background: #f0f0f0; }
+        /* ── Receipt card ─────────────────────────────────────────────────── */
+        .receipt {
+            width: 52mm;
+            background: #fff;
+            margin: 0 auto;
+            padding: 3mm 2mm;
+            box-shadow: 0 2px 8px rgba(0,0,0,.4);
+            line-height: 1.35;
+        }
+        /* ── Typography helpers ───────────────────────────────────────────── */
+        .center { text-align: center; }
+        .bold   { font-weight: bold; }
+        .upper  { text-transform: uppercase; }
+        /* ── Header ───────────────────────────────────────────────────────── */
+        .rr-name {
+            font-size: 9.5pt;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+        .form-title {
+            font-size: 13pt;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 4px;
+            margin: 2px 0 1px;
+        }
+        .form-ref {
+            text-align: center;
+            font-size: 6.5pt;
+            margin-bottom: 2px;
+        }
+        /* ── Dividers ─────────────────────────────────────────────────────── */
+        .div-solid  { border-top: 1px solid #000;  margin: 3px 0; }
+        .div-dashed { border-top: 1px dashed #000; margin: 3px 0; }
+        /* ── Field rows ───────────────────────────────────────────────────── */
+        .field       { margin: 2px 0; }
+        .field-label { font-size: 6.5pt; text-transform: uppercase; letter-spacing: .3px; }
+        .field-value { font-weight: bold; font-size: 8.5pt; display: block; }
+        /* inline variant: label + value on same line */
+        .field-inline { display: flex; gap: 4px; align-items: baseline; margin: 2px 0; }
+        .field-inline .field-label { flex-shrink: 0; }
+        .field-inline .field-value { display: inline; }
+        /* ── Order numbers ────────────────────────────────────────────────── */
+        .order-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px 8px;
+            margin-top: 3px;
+        }
+        .order-num {
+            font-weight: bold;
+            font-size: 8.5pt;
+            border-bottom: 1px solid #000;
+            min-width: 32px;
+            text-align: center;
+            padding-bottom: 1px;
+        }
+        /* ── Footer ───────────────────────────────────────────────────────── */
+        .footer {
+            font-size: 6.5pt;
+            text-align: center;
+            line-height: 1.4;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+<button class="no-print" onclick="window.print()">&#128424; Print to Receipt Printer</button>
+<div class="receipt">
+    <!-- Railroad name + CLEARANCE heading -->
+    <div class="rr-name"   th:text="${railroadName}">Railroad Name</div>
+    <div class="form-title">CLEARANCE</div>
+    <div class="form-ref">Form 427-A &bull; NMRA/ORS 7/23</div>
+    <div class="div-solid"></div>
+    <!-- Station -->
+    <div class="field">
+        <span class="field-label">Station</span>
+        <span class="field-value" th:text="${card.station}"></span>
+    </div>
+    <!-- Date + Time on same line where possible -->
+    <div class="field">
+        <span class="field-label">Date</span>
+        <span class="field-value"
+              th:text="${#temporals.format(card.issuedDate, 'MMM d, yyyy')}"></span>
+    </div>
+    <div class="field">
+        <span class="field-label">Time</span>
+        <span class="field-value"
+              th:text="${#temporals.format(card.issuedTime, 'h:mm a')}"></span>
+    </div>
+    <div class="div-dashed"></div>
+    <!-- Conductor & Engineer -->
+    <div class="field">
+        <span class="field-label">Conductor &amp; Engineer No.</span>
+        <span class="field-value" th:text="${card.trainNumber}"></span>
+    </div>
+    <div class="div-dashed"></div>
+    <!-- Order count sentence -->
+    <div class="field field-inline">
+        <span class="field-label">I have</span>
+        <span class="field-value" th:text="${card.orderCount}"></span>
+        <span class="field-label">orders for your train</span>
+    </div>
+    <!-- Signal stop (optional) -->
+    <div th:unless="${#strings.isEmpty(card.signalStopFor)}">
+        <div class="div-dashed"></div>
+        <div class="field">
+            <span class="field-label">Train order signal at stop for</span>
+            <span class="field-value" th:text="${card.signalStopFor}"></span>
+        </div>
+    </div>
+    <!-- Order numbers (only when present) -->
+    <div th:unless="${#lists.isEmpty(card.orderNumbers)}">
+        <div class="div-dashed"></div>
+        <div class="field">
+            <span class="field-label">Orders delivered with this clearance</span>
+        </div>
+        <div class="order-grid">
+            <span class="order-num"
+                  th:each="num : ${card.orderNumbers}"
+                  th:text="${num}"></span>
+        </div>
+    </div>
+    <div class="div-solid"></div>
+    <!-- Operator -->
+    <div class="field">
+        <span class="field-label">Operator</span>
+        <span class="field-value" th:text="${card.operatorName}"></span>
+    </div>
+    <div class="div-solid"></div>
+    <div class="footer">
+        Conductor and Engineer must each have<br/>
+        a copy and see that their train is<br/>
+        correctly designated in the above form.
+    </div>
+</div>
+</body>
+</html>

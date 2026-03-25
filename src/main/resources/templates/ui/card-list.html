@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${railroadName} + ' — Clearance Cards'">Clearance Cards</title>
+    <link rel="stylesheet" th:href="@{/css/ui.css}"/>
+</head>
+<body>
+<nav class="navbar">
+    <span class="rr-name" th:text="${railroadName}">Railroad</span>
+    <span class="page-title">Clearance Cards</span>
+    <a th:href="@{/ui/clearance-cards/new}" class="btn btn-primary btn-sm">+ New Card</a>
+</nav>
+<div class="container">
+    <!-- Date filter -->
+    <div class="panel">
+        <h2>Filter</h2>
+        <form method="get" th:action="@{/ui/clearance-cards}" class="toolbar">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date"
+                   th:value="${filterDate != null ? #temporals.format(filterDate, 'yyyy-MM-dd') : ''}"/>
+            <button type="submit" class="btn btn-primary btn-sm">Apply Filter</button>
+            <a th:href="@{/ui/clearance-cards}" class="btn btn-secondary btn-sm">Clear</a>
+        </form>
+    </div>
+    <!-- Card list -->
+    <div class="panel">
+        <h2 th:text="${filterDate != null} ? 'Cards for ' + ${#temporals.format(filterDate, 'MMMM d, yyyy')} : 'All Clearance Cards'">All Clearance Cards</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Station</th>
+                        <th>Train / Eng. No.</th>
+                        <th>Orders</th>
+                        <th>Order Numbers</th>
+                        <th>Signal Stop</th>
+                        <th>Operator</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="card : ${cards}">
+                        <td th:text="${#temporals.format(card.issuedDate, 'MM/dd/yyyy')}"></td>
+                        <td th:text="${#temporals.format(card.issuedTime, 'h:mm a')}"></td>
+                        <td th:text="${card.station}"></td>
+                        <td th:text="${card.trainNumber}"></td>
+                        <td th:text="${card.orderCount}" style="text-align:center;"></td>
+                        <td class="order-nums">
+                            <span th:each="num : ${card.orderNumbers}" th:text="${num}" class="badge"></span>
+                            <span th:if="${#lists.isEmpty(card.orderNumbers)}" style="color:#aaa;">&#8212;</span>
+                        </td>
+                        <td th:text="${card.signalStopFor}"></td>
+                        <td th:text="${card.operatorName}"></td>
+                        <td>
+                            <a th:href="@{/api/clearance-cards/{id}/print(id=${card.id})}"
+                               target="_blank" class="btn btn-secondary btn-sm">Print</a>
+                            <a th:href="@{/api/clearance-cards/{id}/receipt(id=${card.id})}"
+                               target="_blank" class="btn btn-secondary btn-sm">Receipt</a>
+                        </td>
+                    </tr>
+                    <tr class="empty-row" th:if="${#lists.isEmpty(cards)}">
+                        <td colspan="9">No clearance cards found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

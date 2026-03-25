@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${railroadName} + ' — New Clearance Card'">New Clearance Card</title>
+    <link rel="stylesheet" th:href="@{/css/ui.css}"/>
+</head>
+<body>
+<nav class="navbar">
+    <span class="rr-name" th:text="${railroadName}">Railroad</span>
+    <span class="page-title">New Clearance Card</span>
+    <a th:href="@{/ui/clearance-cards}" class="btn btn-secondary btn-sm">&#8592; Back to List</a>
+</nav>
+<div class="container">
+    <div class="panel">
+        <h2>Form A &#8212; Clearance Card Entry</h2>
+        <form method="post" th:action="@{/ui/clearance-cards}">
+            <div class="form-grid">
+                <!-- Station -->
+                <div class="form-group">
+                    <label for="station">Station</label>
+                    <input type="text" id="station" name="station" required
+                           placeholder="e.g. Riverdale"/>
+                </div>
+                <!-- Train / Engineer No. -->
+                <div class="form-group">
+                    <label for="trainNumber">Conductor and Engineer No.</label>
+                    <input type="text" id="trainNumber" name="trainNumber" required
+                           placeholder="e.g. Extra 1234 East"/>
+                </div>
+                <!-- Date -->
+                <div class="form-group">
+                    <label for="issuedDate">Date</label>
+                    <input type="date" id="issuedDate" name="issuedDate" required
+                           th:value="${today}"/>
+                </div>
+                <!-- Time -->
+                <div class="form-group">
+                    <label for="issuedTime">Time</label>
+                    <input type="time" id="issuedTime" name="issuedTime" required
+                           th:value="${nowTime}"/>
+                </div>
+                <!-- Order count -->
+                <div class="form-group">
+                    <label for="orderCount">I have ___ orders for your train</label>
+                    <input type="number" id="orderCount" name="orderCount" required
+                           min="0" value="0"/>
+                    <span class="form-hint">Operator's stated count — saved as-is.</span>
+                </div>
+                <!-- Signal stop for -->
+                <div class="form-group">
+                    <label for="signalStopFor">Train order signal is at stop for</label>
+                    <input type="text" id="signalStopFor" name="signalStopFor"
+                           placeholder="train(s) held at stop, or leave blank"/>
+                </div>
+                <!-- Operator -->
+                <div class="form-group">
+                    <label for="operatorName">Operator</label>
+                    <input type="text" id="operatorName" name="operatorName" required
+                           placeholder="Operator name / initials"/>
+                </div>
+                <!-- Order numbers — full-width, dynamic list -->
+                <div class="form-group full">
+                    <label>Numbers of orders delivered with this clearance</label>
+                    <div id="order-list" class="order-list">
+                        <div class="order-row">
+                            <input type="text" name="orderNumbers"
+                                   placeholder="Order number" maxlength="20"/>
+                            <button type="button" class="btn btn-danger btn-sm"
+                                    onclick="removeOrderRow(this)">&#10005;</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm"
+                            onclick="addOrderRow()">+ Add Order Number</button>
+                    <span class="form-hint">Add one row per order number.</span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Clearance Card</button>
+                <a th:href="@{/ui/clearance-cards}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+function addOrderRow() {
+    const list = document.getElementById('order-list');
+    const row = document.createElement('div');
+    row.className = 'order-row';
+    row.innerHTML =
+        '<input type="text" name="orderNumbers" placeholder="Order number" maxlength="20"/>' +
+        '<button type="button" class="btn btn-danger btn-sm" onclick="removeOrderRow(this)">&#10005;</button>';
+    list.appendChild(row);
+    row.querySelector('input').focus();
+}
+function removeOrderRow(btn) {
+    const list = document.getElementById('order-list');
+    if (list.children.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        // Always keep at least one row; just clear the value
+        btn.parentElement.querySelector('input').value = '';
+    }
+}
+</script>
+</body>
+</html>

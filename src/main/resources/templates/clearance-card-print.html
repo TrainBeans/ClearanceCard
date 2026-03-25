@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${railroadName} + ' — Clearance Form A'">Clearance Form A</title>
+    <style>
+        /* ── Print: hide browser chrome and buttons ───────────────────────── */
+        @media print {
+            body   { margin: 0.25in; background: #fff; }
+            .no-print { display: none !important; }
+        }
+
+        /* ── Screen defaults ──────────────────────────────────────────────── */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12pt;
+            color: #000;
+            background: #e8e8e8;
+            margin: 0;
+            padding: 24px;
+        }
+
+        .print-btn {
+            display: block;
+            margin: 0 auto 16px;
+            padding: 8px 28px;
+            font-size: 11pt;
+            font-family: sans-serif;
+            cursor: pointer;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #fff;
+            max-width: 5.5in;
+        }
+        .print-btn:hover { background: #f0f0f0; }
+
+        /* ── Form card ────────────────────────────────────────────────────── */
+        .form-card {
+            border: 2px solid #000;
+            padding: 20px 28px 16px;
+            max-width: 5.5in;
+            margin: 0 auto;
+            background: #fff;
+        }
+
+        /* ── Header ───────────────────────────────────────────────────────── */
+        .form-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8pt;
+            margin-bottom: 6px;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        .form-header .railroad-name {
+            font-size: 14pt;
+            font-weight: bold;
+        }
+        .form-header .clearance-title {
+            font-size: 22pt;
+            font-weight: bold;
+            letter-spacing: 6px;
+            margin-top: 4px;
+        }
+
+        /* ── Dividers ─────────────────────────────────────────────────────── */
+        .divider {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 12px 0;
+        }
+
+        /* ── Form rows ────────────────────────────────────────────────────── */
+        .field-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            margin: 10px 0;
+        }
+        .label {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        /* underlined value blank */
+        .blank {
+            flex: 1;
+            border-bottom: 1px solid #000;
+            min-width: 32px;
+            font-weight: bold;
+            padding: 0 4px 1px;
+            text-align: center;
+        }
+        .blank-narrow { flex: 0 0 auto; min-width: 48px; }
+        .blank-wide   { flex: 2; }
+
+        /* ── Order numbers grid ───────────────────────────────────────────── */
+        .order-numbers-section {
+            margin: 10px 0 4px;
+        }
+        .order-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+            min-height: 22px;
+        }
+        .order-box {
+            border-bottom: 1px solid #000;
+            min-width: 64px;
+            text-align: center;
+            font-weight: bold;
+            padding: 0 4px 2px;
+        }
+
+        /* ── Operator row ─────────────────────────────────────────────────── */
+        .operator-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        /* ── Footer note ──────────────────────────────────────────────────── */
+        .footer-note {
+            font-size: 8.5pt;
+            font-style: italic;
+            margin-top: 12px;
+            text-align: center;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨 Print This Card</button>
+
+<div class="form-card">
+
+    <!-- Form identifier row -->
+    <div class="form-meta">
+        <span>Printed in U.S.A. &nbsp;&nbsp; NMRA/ORS 7/23</span>
+        <span>Form 427 &#8211; A</span>
+    </div>
+
+    <!-- Railroad name + CLEARANCE heading -->
+    <div class="form-header">
+        <div class="railroad-name" th:text="${railroadName}">Railroad Name</div>
+        <div class="clearance-title">CLEARANCE</div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- Station · Time · Date -->
+    <div class="field-row">
+        <span class="label">Station</span>
+        <span class="blank blank-wide" th:text="${card.station}"></span>
+        <span class="blank blank-narrow"
+              th:text="${#temporals.format(card.issuedTime, 'h:mm a')}"></span>
+        <span class="blank blank-wide"
+              th:text="${#temporals.format(card.issuedDate, 'MMMM d, yyyy')}"></span>
+    </div>
+
+    <!-- Conductor and Engineer No. -->
+    <div class="field-row">
+        <span class="label">Conductor and Engineer No.</span>
+        <span class="blank" th:text="${card.trainNumber}"></span>
+    </div>
+
+    <!-- I have N orders for your train -->
+    <div class="field-row">
+        <span class="label">I have</span>
+        <span class="blank blank-narrow" th:text="${card.orderCount}"></span>
+        <span class="label">orders for your train</span>
+    </div>
+
+    <!-- Train order signal stop -->
+    <div class="field-row">
+        <span class="label">Train order signal is at stop for</span>
+        <span class="blank" th:text="${card.signalStopFor}"></span>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- Order numbers delivered with this clearance -->
+    <div class="order-numbers-section">
+        <span class="label">Numbers of orders delivered with this clearance:</span>
+        <div class="order-grid" th:unless="${#lists.isEmpty(card.orderNumbers)}">
+            <span class="order-box"
+                  th:each="num : ${card.orderNumbers}"
+                  th:text="${num}"></span>
+        </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- Operator signature -->
+    <div class="operator-row">
+        <span class="blank blank-wide" th:text="${card.operatorName}"></span>
+        <span class="label">Operator.</span>
+    </div>
+
+    <p class="footer-note">
+        Conductor and Engineer must each have a copy and see that their train
+        is correctly designated in the above form.
+    </p>
+
+</div>
+
+<button class="print-btn no-print" onclick="window.print()">🖨 Print This Card</button>
+
+</body>
+</html>
+
