@@ -50,11 +50,10 @@ class ClearanceCardPersistenceRestartTest {
 
     private ConfigurableApplicationContext runWith(String url) {
         return new SpringApplicationBuilder(ClearanceCardApplication.class)
-                .properties(
-                        "spring.main.web-application-type=none",
-                        "spring.datasource.url=" + url,
-                        "spring.sql.init.mode=never",
-                        "app.railroad.name=Test Railroad")
-                .run();
+                .properties("spring.main.web-application-type=none")
+                .run(
+                        "--spring.datasource.url=" + url,
+                        "--spring.sql.init.mode=never",
+                        "--app.railroad.name=Test Railroad");
     }
 }
