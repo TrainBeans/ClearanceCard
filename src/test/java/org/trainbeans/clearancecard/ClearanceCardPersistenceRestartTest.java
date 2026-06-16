@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ClearanceCardPersistenceRestartTest {
 
-    private static final String SCHEMA_INIT_CLAUSE = ";DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:schema.sql'";
+    private static final String H2_CONNECTION_OPTIONS = ";DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:schema.sql'";
 
     @TempDir
     Path tempDir;
@@ -25,7 +25,7 @@ class ClearanceCardPersistenceRestartTest {
     @Test
     void fileBackedDatabaseSurvivesApplicationRestart() {
         String dbPath = tempDir.resolve("clearancecard").toAbsolutePath().toString();
-        String url = "jdbc:h2:file:" + dbPath + SCHEMA_INIT_CLAUSE;
+        String url = "jdbc:h2:file:" + dbPath + H2_CONNECTION_OPTIONS;
 
         try (ConfigurableApplicationContext first = runWith(url)) {
             ClearanceCardService service = first.getBean(ClearanceCardService.class);
