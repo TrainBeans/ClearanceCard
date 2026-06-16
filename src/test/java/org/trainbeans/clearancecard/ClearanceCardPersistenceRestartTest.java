@@ -55,7 +55,6 @@ class ClearanceCardPersistenceRestartTest {
                 .properties("spring.main.web-application-type=none")
                 .run(
                         "--spring.datasource.url=" + url,
-                        "--spring.sql.init.mode=never",
                         "--app.railroad.name=Test Railroad");
     }
 }
