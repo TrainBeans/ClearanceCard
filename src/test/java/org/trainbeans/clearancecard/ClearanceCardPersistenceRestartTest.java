@@ -17,13 +17,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ClearanceCardPersistenceRestartTest {
 
+    private static final String SCHEMA_INIT_CLAUSE = ";DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:schema.sql'";
+
     @TempDir
     Path tempDir;
 
     @Test
     void fileBackedDatabaseSurvivesApplicationRestart() {
         String dbPath = tempDir.resolve("clearancecard").toAbsolutePath().toString();
-        String url = "jdbc:h2:file:" + dbPath + ";DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:schema.sql'";
+        String url = "jdbc:h2:file:" + dbPath + SCHEMA_INIT_CLAUSE;
 
         try (ConfigurableApplicationContext first = runWith(url)) {
             ClearanceCardService service = first.getBean(ClearanceCardService.class);
