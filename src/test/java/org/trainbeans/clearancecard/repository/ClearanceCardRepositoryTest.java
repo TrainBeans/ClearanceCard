@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.trainbeans.clearancecard.model.ClearanceCard;
 import org.trainbeans.clearancecard.model.ClearanceCardRequest;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 @JdbcTest
 @Import(ClearanceCardRepository.class)
+@ActiveProfiles("test")
 class ClearanceCardRepositoryTest {
     @Autowired
     private ClearanceCardRepository repository;

@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local H2 database files (file-based dev/run outside Docker) ###
+/data/
+
+### Docker environment overrides ###
+.env
+
