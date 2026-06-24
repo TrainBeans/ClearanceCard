@@ -12,12 +12,13 @@
         @media print {
             .no-print { display: none !important; }
             body { background: #fff; padding: 0; margin: 0; }
-            .receipt { box-shadow: none; border: none; padding: 0; width: 100%; }
+            .form-card { box-shadow: none; padding: 1mm; width: 100%; max-width: 100%; }
         }
+
         /* ── Screen preview ───────────────────────────────────────────────── */
         body {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 8pt;
+            font-size: 7pt;
             color: #000;
             background: #999;
             margin: 0;
@@ -36,144 +37,203 @@
             width: 52mm;
         }
         .no-print:hover { background: #f0f0f0; }
-        /* ── Receipt card ─────────────────────────────────────────────────── */
-        .receipt {
-            width: 52mm;
-            background: #fff;
+
+        /* ── Form card ────────────────────────────────────────────────────── */
+        .form-card {
+            border: 1px solid #000;
+            padding: 2mm 2mm 1.5mm;
+            max-width: 52mm;
             margin: 0 auto;
-            padding: 3mm 2mm;
+            background: #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,.4);
-            line-height: 1.35;
         }
-        /* ── Typography helpers ───────────────────────────────────────────── */
-        .center { text-align: center; }
-        .bold   { font-weight: bold; }
-        .upper  { text-transform: uppercase; }
-        /* ── Header ───────────────────────────────────────────────────────── */
-        .rr-name {
-            font-size: 9.5pt;
-            font-weight: bold;
-            text-align: center;
-            text-transform: uppercase;
-            word-break: break-word;
-            line-height: 1.2;
-        }
-        .form-title {
-            font-size: 13pt;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 4px;
-            margin: 2px 0 1px;
-        }
-        .form-ref {
-            text-align: center;
-            font-size: 6.5pt;
+
+        /* ── Form meta row ────────────────────────────────────────────────── */
+        .form-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 5pt;
             margin-bottom: 2px;
         }
+
+        /* ── Header ───────────────────────────────────────────────────────── */
+        .form-header {
+            text-align: center;
+            margin-bottom: 3px;
+        }
+        .form-header .railroad-name {
+            font-size: 8.5pt;
+            font-weight: bold;
+        }
+        .form-header .clearance-title {
+            font-size: 13pt;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-top: 2px;
+        }
+
         /* ── Dividers ─────────────────────────────────────────────────────── */
-        .div-solid  { border-top: 1px solid #000;  margin: 3px 0; }
-        .div-dashed { border-top: 1px dashed #000; margin: 3px 0; }
+        .divider {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 3px 0;
+        }
+
         /* ── Field rows ───────────────────────────────────────────────────── */
-        .field       { margin: 2px 0; }
-        .field-label { font-size: 6.5pt; text-transform: uppercase; letter-spacing: .3px; }
-        .field-value { font-weight: bold; font-size: 8.5pt; display: block; }
-        /* inline variant: label + value on same line */
-        .field-inline { display: flex; gap: 4px; align-items: baseline; margin: 2px 0; }
-        .field-inline .field-label { flex-shrink: 0; }
-        .field-inline .field-value { display: inline; }
-        /* ── Order numbers ────────────────────────────────────────────────── */
+        .field-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            margin: 3px 0;
+        }
+        .label {
+            white-space: normal;
+            word-break: break-word;
+            flex-shrink: 1;
+            font-size: 7pt;
+        }
+        /* stacked variant: label on its own line, blank spans full width below */
+        .field-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            margin: 3px 0;
+        }
+        .field-col .blank {
+            flex: none;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        /* underlined value blank */
+        .blank {
+            flex: 1;
+            border-bottom: 1px solid #000;
+            min-width: 16px;
+            font-weight: bold;
+            padding: 0 2px 1px;
+            text-align: center;
+            font-size: 7pt;
+        }
+        .blank-narrow { flex: 0 0 auto; min-width: 22px; }
+        .blank-wide   { flex: 2; }
+
+        /* ── Order numbers grid ───────────────────────────────────────────── */
+        .order-numbers-section {
+            margin: 3px 0 2px;
+        }
         .order-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 3px 8px;
+            gap: 4px;
             margin-top: 3px;
+            min-height: 12px;
         }
-        .order-num {
-            font-weight: bold;
-            font-size: 8.5pt;
+        .order-box {
             border-bottom: 1px solid #000;
-            min-width: 32px;
+            min-width: 24px;
             text-align: center;
-            padding-bottom: 1px;
+            font-weight: bold;
+            padding: 0 2px 1px;
+            font-size: 7pt;
         }
-        /* ── Footer ───────────────────────────────────────────────────────── */
-        .footer {
-            font-size: 6.5pt;
+
+        /* ── Operator row ─────────────────────────────────────────────────── */
+        .operator-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            gap: 3px;
+            margin: 3px 0;
+        }
+
+        /* ── Footer note ──────────────────────────────────────────────────── */
+        .footer-note {
+            font-size: 5.5pt;
+            font-style: italic;
+            margin-top: 3px;
             text-align: center;
             line-height: 1.4;
-            margin-top: 3px;
         }
     </style>
 </head>
 <body>
+
 <button class="no-print" onclick="window.print()">&#128424; Print to Receipt Printer</button>
-<div class="receipt">
-    <!-- Railroad name + CLEARANCE heading -->
-    <div class="rr-name"   th:text="${railroadName}">Railroad Name</div>
-    <div class="form-title">CLEARANCE</div>
-    <div class="form-ref">Form 427-A &bull; NMRA/ORS 7/23</div>
-    <div class="div-solid"></div>
-    <!-- Station -->
-    <div class="field">
-        <span class="field-label">Station</span>
-        <span class="field-value" th:text="${card.station}"></span>
+
+<div class="form-card">
+
+    <!-- Form identifier row -->
+    <div class="form-meta">
+        <span>Printed in U.S.A. &nbsp; NMRA/ORS 7/23</span>
+        <span>Form 427 &#8211; A</span>
     </div>
-    <!-- Date + Time on same line where possible -->
-    <div class="field">
-        <span class="field-label">Date</span>
-        <span class="field-value"
+
+    <!-- Railroad name + CLEARANCE heading -->
+    <div class="form-header">
+        <div class="railroad-name" th:text="${railroadName}">Railroad Name</div>
+        <div class="clearance-title">CLEARANCE</div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- Station · Time · Date -->
+    <div class="field-row">
+        <span class="label">Station</span>
+        <span class="blank blank-wide" th:text="${card.station}"></span>
+        <span class="blank blank-narrow"
+              th:text="${#temporals.format(card.issuedTime, 'h:mm a')}"></span>
+        <span class="blank blank-wide"
               th:text="${#temporals.format(card.issuedDate, 'MMM d, yyyy')}"></span>
     </div>
-    <div class="field">
-        <span class="field-label">Time</span>
-        <span class="field-value"
-              th:text="${#temporals.format(card.issuedTime, 'h:mm a')}"></span>
+
+    <!-- Conductor and Engineer No. -->
+    <div class="field-col">
+        <span class="label">Conductor and Engineer No.</span>
+        <span class="blank" th:text="${card.trainNumber}"></span>
     </div>
-    <div class="div-dashed"></div>
-    <!-- Conductor & Engineer -->
-    <div class="field">
-        <span class="field-label">Conductor &amp; Engineer No.</span>
-        <span class="field-value" th:text="${card.trainNumber}"></span>
+
+    <!-- I have N orders for your train -->
+    <div class="field-row">
+        <span class="label">I have</span>
+        <span class="blank blank-narrow" th:text="${card.orderCount}"></span>
+        <span class="label">orders for your train</span>
     </div>
-    <div class="div-dashed"></div>
-    <!-- Order count sentence -->
-    <div class="field field-inline">
-        <span class="field-label">I have</span>
-        <span class="field-value" th:text="${card.orderCount}"></span>
-        <span class="field-label">orders for your train</span>
+
+    <!-- Train order signal stop -->
+    <div class="field-col" th:unless="${#strings.isEmpty(card.signalStopFor)}">
+        <span class="label">Train order signal is at stop for</span>
+        <span class="blank" th:text="${card.signalStopFor}"></span>
     </div>
-    <!-- Signal stop (optional) -->
-    <div th:unless="${#strings.isEmpty(card.signalStopFor)}">
-        <div class="div-dashed"></div>
-        <div class="field">
-            <span class="field-label">Train order signal at stop for</span>
-            <span class="field-value" th:text="${card.signalStopFor}"></span>
-        </div>
-    </div>
-    <!-- Order numbers (only when present) -->
-    <div th:unless="${#lists.isEmpty(card.orderNumbers)}">
-        <div class="div-dashed"></div>
-        <div class="field">
-            <span class="field-label">Orders delivered with this clearance</span>
-        </div>
-        <div class="order-grid">
-            <span class="order-num"
+
+    <hr class="divider"/>
+
+    <!-- Order numbers delivered with this clearance -->
+    <div class="order-numbers-section">
+        <span class="label">Numbers of orders delivered with this clearance:</span>
+        <div class="order-grid" th:unless="${#lists.isEmpty(card.orderNumbers)}">
+            <span class="order-box"
                   th:each="num : ${card.orderNumbers}"
                   th:text="${num}"></span>
         </div>
     </div>
-    <div class="div-solid"></div>
-    <!-- Operator -->
-    <div class="field">
-        <span class="field-label">Operator</span>
-        <span class="field-value" th:text="${card.operatorName}"></span>
+
+    <hr class="divider"/>
+
+    <!-- Operator signature -->
+    <div class="operator-row">
+        <span class="blank blank-wide" th:text="${card.operatorName}"></span>
+        <span class="label">Operator.</span>
     </div>
-    <div class="div-solid"></div>
-    <div class="footer">
-        Conductor and Engineer must each have<br/>
-        a copy and see that their train is<br/>
-        correctly designated in the above form.
-    </div>
+
+    <p class="footer-note">
+        Conductor and Engineer must each have a copy and see that their train
+        is correctly designated in the above form.
+    </p>
+
 </div>
+
+<button class="no-print" onclick="window.print()">&#128424; Print to Receipt Printer</button>
+
 </body>
 </html>

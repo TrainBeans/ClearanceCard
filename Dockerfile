@@ -17,6 +17,11 @@ WORKDIR /app
 
 COPY --from=build /workspace/target/app.jar app.jar
 
+# Declare the data directory as a volume mount point.
+# H2 stores its file-based database here (data/clearancecard.mv.db).
+# Mount a named volume or host path here to persist cards across container recreations.
+VOLUME /app/data
+
 EXPOSE 8080
 
 

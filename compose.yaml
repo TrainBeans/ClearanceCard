@@ -1,1 +1,34 @@
-services: { }
+# Docker Compose for ClearanceCard
+# Builds the image locally and persists the H2 database across container restarts.
+#
+# Usage:
+#   docker compose up --build        # first run (or after source changes)
+#   docker compose up -d             # subsequent starts (detached)
+#   docker compose down              # stop containers (data volume is preserved)
+#   docker compose down -v           # ⚠️  also deletes the data volume (all cards lost)
+#
+# To use the pre-built image from ghcr.io instead of building locally, replace
+# `build: .` with `image: ghcr.io/<owner>/clearancecard:master`.
+#
+# Customise the railroad name by setting APP_RAILROAD_NAME in a .env file or
+# by passing it on the command line:
+#   APP_RAILROAD_NAME="My Railroad" docker compose up
+
+services:
+  clearancecard:
+    build: .
+    # image: ghcr.io/<owner>/clearancecard:master   # ← uncomment to pull from registry
+    ports:
+      - "8080:8080"
+    volumes:
+      # Named volume so H2 database files survive container removal / recreation.
+      - clearancecard-data:/app/data
+    environment:
+      # Override the railroad name without rebuilding the image.
+      # Falls back to the value baked into application.properties when not set.
+      APP_RAILROAD_NAME: ${APP_RAILROAD_NAME:-}
+    restart: unless-stopped
+
+volumes:
+  # Docker-managed named volume; backed up with `docker run --rm -v clearancecard-data:/data ...`
+  clearancecard-data:
